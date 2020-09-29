@@ -31,8 +31,7 @@ year = {2020}
 * Python3 and R implementation of POTD
 
 * Demo notebooks:
-	- [ppmm_example.ipynb](ppmm_example.ipynb): Compare PPMM with other methods in calculating the Wasserstein distance
-
+	- [potd_example.ipynb](potd_example.ipynb): Compare POTD with other methods in estimating the SDR subspace
 ### Authors
 
 * [Cheng Meng](https://github.com/ChengzijunAixiaoli)
