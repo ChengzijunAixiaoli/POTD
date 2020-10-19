@@ -93,7 +93,7 @@ def potd(data_bind, y_label, weight, k, with_sigma = False, time_show = False, t
                 #NN = len(X); MM = len(Y)
                 #a, b = np.ones((NN,)) / NN, np.ones((MM,)) / MM
                 a, b = aa/sum(aa), bb/sum(bb)
-                M = ot.dist(X, Y)
+                M = ot.dist(X, Y, metric = "euclidean")
                 M = M/M.max()
         
                 if use_sink:
@@ -118,7 +118,7 @@ def potd(data_bind, y_label, weight, k, with_sigma = False, time_show = False, t
             #NN = len(X); MM = len(Y)
             #a, b = np.ones((NN,)) / NN, np.ones((MM,)) / MM
             a, b = aa/sum(aa), bb/sum(bb)
-            M = ot.dist(X, Y)
+            M = ot.dist(X, Y, metric = "euclidean")
             M = M/M.max()
     
             G = ot.emd(a, b, M)      
