@@ -88,7 +88,7 @@ def potd(data_bind, y_label, weight, k, with_sigma = False, time_show = False, t
                 X = data_bind[y_label==slice_cate[i],:]
                 Y = data_bind[y_label==slice_cate[j],:]
                 aa = weight[y_label==slice_cate[i]]
-                bb = weight[y_label==slice_cate[i]]
+                bb = weight[y_label==slice_cate[j]]
                 
                 #NN = len(X); MM = len(Y)
                 #a, b = np.ones((NN,)) / NN, np.ones((MM,)) / MM
