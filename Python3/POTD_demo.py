@@ -3,7 +3,7 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 os.chdir("D:/Dropbox/Density Estimation/code/POTD/Final_code")
-from POTD_utility import potd, saveDir2, drDir2
+from POTD_utility import potd, saveDir2
 #from scipy.linalg import sqrtm
 from sliced import SlicedInverseRegression
 from sklearn.preprocessing import scale
@@ -52,7 +52,7 @@ plt.show()
 # =============================================================================
 # 
 # 
-# SAVE & DR
+# SAVE 
 # 
 # 
 # =============================================================================
@@ -71,16 +71,6 @@ plt.xlabel("SAVE-1",size=25)
 plt.ylabel("SAVE-2",size=25)
 plt.show() 
 
-
-eigen_meta, dir_meta = drDir2(X_train, y_train, 2)
-
-plt.figure(figsize=(6,6))
-plt.scatter(X@dir_meta[:,0], X@dir_meta[:,1], c='r', zorder=10, alpha=0.7)
-plt.scatter(Y@dir_meta[:,0], Y@dir_meta[:,1], c='b', zorder=10, alpha=0.7)
-plt.axis('equal')
-plt.xlabel("DR-1",size=25)
-plt.ylabel("DR-2",size=25)
-plt.show() 
 
 
 
