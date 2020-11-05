@@ -161,7 +161,7 @@ def saveDir2(data_bind, y_label, k, with_svd=False, thres=0.7):
 
     NN = data_bind.shape[0]
     pp = data_bind.shape[1]
-    weight_bind = np.ones((NN,)) / NN
+
     
     if with_svd:
         svd = TruncatedSVD(n_components=pp-1, random_state=42)
@@ -173,11 +173,10 @@ def saveDir2(data_bind, y_label, k, with_svd=False, thres=0.7):
         signrt = np.transpose(v_mat)@sigma_mat@v_mat
         data_scale = data_bind@signrt
     else:
-        data_cov = np.cov(data_bind.T, aweights = weight_bind)
+        data_cov = np.cov(data_bind.T)
         covinv = np.linalg.inv(data_cov)
         signrt = sqrtm(covinv)   
-        data_weight = data_bind * weight_bind.reshape(-1, 1)
-        cm = data_weight.mean(axis = 0)
+        cm = data_bind.mean(axis = 0)
         data_scale = (data_bind-cm)@signrt
 
     
@@ -197,8 +196,7 @@ def saveDir2(data_bind, y_label, k, with_svd=False, thres=0.7):
     save_list = np.zeros([H,pp,pp])
     for i in range(H):
         datai = data_scale[y_label==slice_cate[i],:]
-        wi = weight_bind[y_label==slice_cate[i]]
-        vxy[i,:,:] = np.cov(datai.T, aweights = wi)
+        vxy[i,:,:] = np.cov(datai.T)
         save_list[i,:,:] = prob[i]*((vxy[i,:,:]-diag)@(vxy[i,:,:]-diag))
     savemat = sum(save_list)
 
@@ -217,78 +215,4 @@ def saveDir2(data_bind, y_label, k, with_svd=False, thres=0.7):
     return eigen_meta, dir_meta
 #==============================================================================
     
-
-
-
-#==============================================================================
-############### DR direction #################
-### x, y: 2-d array
-def drDir2(data_bind, y_label, k, with_svd=False, thres=0.7): 
-
-    NN = data_bind.shape[0]
-    pp = data_bind.shape[1]
-    weight_bind = np.ones((NN,)) / NN
-    
-    
-    if with_svd:
-        svd = TruncatedSVD(n_components=pp-1, random_state=42)
-        svd.fit(data_bind)               
-        sv_cum = np.cumsum(svd.singular_values_)/sum(svd.singular_values_)
-        nc = np.where(sv_cum>thres)[0][0]      
-        v_mat = svd.components_[range(nc),:]        
-        sigma_mat = np.diag(1/svd.singular_values_[range(nc)])
-        signrt = np.transpose(v_mat)@sigma_mat@v_mat
-    else:   
-        data_cov = np.cov(data_bind.T, aweights = weight_bind)
-        covinv = np.linalg.inv(data_cov)
-        signrt = sqrtm(covinv)  
-
-    
-          
-    
-    data_weight = data_bind * weight_bind.reshape(-1, 1)
-    cm = data_weight.mean(axis = 0)
-    #data_scale = (data_bind-cm)@signrt
-    slice_cate = pd.Categorical(y_label).categories   
-    H = len(slice_cate)
-    prob = []
-    for i in range(H):
-        prob.append(len(y_label[y_label==slice_cate[i]])/NN)
-     
-    ### dr matrix
-    diag = np.diag(np.repeat(1, pp))
-    dr_list1 = np.zeros([H,pp,pp])
-    dr_list2 = np.zeros([H,pp,pp])
-    for i in range(H):
-        datai = data_bind[y_label==slice_cate[i],:]
-        wi = weight_bind[y_label==slice_cate[i]]
-         
-        s1 = (datai-cm)@signrt*wi.reshape(-1, 1)
-        e1 = s1.mean(axis = 0)
-        v1 = np.cov((datai-cm)@signrt.T, aweights = wi)        
-        dr_list1[i,:,:] = prob[i]*((v1 + np.outer(e1, e1))@(v1 + np.outer(e1, e1)))
-        dr_list2[i,:,:] = prob[i]*(np.outer(e1, e1))
-
-    mat1 = sum(dr_list1)
-    mat2 = sum(dr_list2)
-
-    drmat = 2*mat1 + 2*mat2@mat2 + 2*sum(np.diag(mat2))*mat2 - 2*diag
-    eigenValues, eigenVectors = np.linalg.eig(drmat) 
-    idx = eigenValues.argsort()[::-1] 
-
-    eigen_meta = []
-    dir_meta = np.zeros((pp,k))
-    for i in range(k):
-        vector = eigenVectors[:, idx[i]]
-        dir_temp = signrt@vector
-        dir_meta[:,i] = dir_temp/np.sqrt(dir_temp@dir_temp)
-        eigen_meta.append(eigenValues[idx[i]])
-
-    return eigen_meta, dir_meta
-
-
-
-
-
-
 
