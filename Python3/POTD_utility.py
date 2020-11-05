@@ -38,20 +38,6 @@ def NN_score(X_train_center, X_test, y_train, y_test, direct, col_mean, nn=5):
     return score
     
 
-#==============================================================================
-############# Fast covariance matrix calculation ##############
-### x: 2-d dataframe, n*p
-#Reference for weighted covariance matrix
-#https://link.springer.com/referenceworkentry/10.1007%2F978-3-642-04898-2_612
-def fastCov(data, weight):
-    data_weight = data * weight.reshape(-1, 1)
-    data_mean = np.mean(data_weight, axis = 0)
-    sdata = (data - data_mean)*np.sqrt(weight).reshape(-1, 1)
-    data_cov = sdata.T.dot(sdata)/(data.shape[0]-1)
-    return data_cov    
-#==============================================================================
-
-
 
 
 
@@ -88,7 +74,7 @@ def potd(data_bind, y_label, weight, k, with_sigma = False, time_show = False, t
                 X = data_bind[y_label==slice_cate[i],:]
                 Y = data_bind[y_label==slice_cate[j],:]
                 aa = weight[y_label==slice_cate[i]]
-                bb = weight[y_label==slice_cate[j]]
+                bb = weight[y_label==slice_cate[i]]
                 
                 #NN = len(X); MM = len(Y)
                 #a, b = np.ones((NN,)) / NN, np.ones((MM,)) / MM
@@ -187,7 +173,7 @@ def saveDir2(data_bind, y_label, k, with_svd=False, thres=0.7):
         signrt = np.transpose(v_mat)@sigma_mat@v_mat
         data_scale = data_bind@signrt
     else:
-        data_cov = fastCov(data_bind, weight_bind)
+        data_cov = np.cov(data_bind.T, aweights = weight_bind)
         covinv = np.linalg.inv(data_cov)
         signrt = sqrtm(covinv)   
         data_weight = data_bind * weight_bind.reshape(-1, 1)
@@ -212,7 +198,7 @@ def saveDir2(data_bind, y_label, k, with_svd=False, thres=0.7):
     for i in range(H):
         datai = data_scale[y_label==slice_cate[i],:]
         wi = weight_bind[y_label==slice_cate[i]]
-        vxy[i,:,:] = fastCov(datai, wi)
+        vxy[i,:,:] = np.cov(datai.T, aweights = wi)
         save_list[i,:,:] = prob[i]*((vxy[i,:,:]-diag)@(vxy[i,:,:]-diag))
     savemat = sum(save_list)
 
@@ -253,7 +239,7 @@ def drDir2(data_bind, y_label, k, with_svd=False, thres=0.7):
         sigma_mat = np.diag(1/svd.singular_values_[range(nc)])
         signrt = np.transpose(v_mat)@sigma_mat@v_mat
     else:   
-        data_cov = fastCov(data_bind, weight_bind)
+        data_cov = np.cov(data_bind.T, aweights = weight_bind)
         covinv = np.linalg.inv(data_cov)
         signrt = sqrtm(covinv)  
 
@@ -279,7 +265,7 @@ def drDir2(data_bind, y_label, k, with_svd=False, thres=0.7):
          
         s1 = (datai-cm)@signrt*wi.reshape(-1, 1)
         e1 = s1.mean(axis = 0)
-        v1 = fastCov((datai-cm)@signrt, wi)        
+        v1 = np.cov((datai-cm)@signrt.T, aweights = wi)        
         dr_list1[i,:,:] = prob[i]*((v1 + np.outer(e1, e1))@(v1 + np.outer(e1, e1)))
         dr_list2[i,:,:] = prob[i]*(np.outer(e1, e1))
 
