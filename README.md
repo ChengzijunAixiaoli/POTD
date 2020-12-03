@@ -31,12 +31,12 @@ year = {2020}
 * Python3 and R implementation of POTD
 * A demo of POTD in both Python3 and R, compared with SIR, SAVE, and DR methods.
 * Simulation results
-
+* Classification experiments on the MNIST dataset
 
 ### Authors
 
 * [Cheng Meng](https://github.com/ChengzijunAixiaoli)
-* [Tao Li]
+* [Tao Li](https://github.com/sherlockLitao)
 
 
 
@@ -44,3 +44,4 @@ year = {2020}
 ## References
 
 [1] Flamary Rémi and Courty Nicolas [POT Python Optimal Transport library](https://github.com/rflamary/POT)
+[2] Hexuan Liu [WDA_eig](https://github.com/HexuanLiu/WDA_eig)
