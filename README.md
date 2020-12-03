@@ -1,5 +1,5 @@
 
-# PPMM
+# POTD
 
 Python3 and R implementation of the paper [Sufficient dimension reduction for classification using principal optimal transport direction] (NeurIPS 2020)
 
@@ -7,7 +7,7 @@ Principal optimal transport direction (POTD) is a sufficient dimension reduction
 
 Feel free to ask if any question.
 
-If you use this toolbox in your research and find it useful, please cite PPMM using the following bibtex reference:
+If you use this toolbox in your research and find it useful, please cite POTD using the following bibtex reference:
 
 ```
 @incollection{meng2020potd,
@@ -44,4 +44,5 @@ year = {2020}
 ## References
 
 [1] Flamary Rémi and Courty Nicolas [POT Python Optimal Transport library](https://github.com/rflamary/POT)
+
 [2] Hexuan Liu [WDA_eig](https://github.com/HexuanLiu/WDA_eig)
